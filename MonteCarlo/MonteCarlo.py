@@ -14,7 +14,7 @@ from tensorflow.python.keras.layers.core import Dropout
 from tensorflow import config
 tf.compat.v1.disable_eager_execution()
 
-EPISODES = 10000
+EPISODES = 4000
 NUM_ACTIONS = 56
 NUM_STATE = 143
 GAMMA = 0.99
@@ -46,13 +46,6 @@ def discount_rewards(r):
         running_add = running_add * GAMMA + r[t]
         discounted_r[t] = running_add
     return discounted_r
-
-def pg_loss(advantage):
-    def f(y_true, y_pred):
-        responsible_outputs = K.sum(y_true * y_pred, axis=1)
-        policy_loss = -K.sum(advantage * K.log(responsible_outputs))
-        return policy_loss
-    return f
 
 def get_dropout(input_tensor, p):
     return Dropout(p)(input_tensor, training=True)
